@@ -56,7 +56,7 @@
       stroke: none,
       text(
         font: fonts.at(info-key-font, default: "黑体"),
-        size: 字号.四号,
+        size: 字号.小四,
         weight: "bold",
         body
       ),
@@ -71,7 +71,7 @@
       stroke: none,
       text(
         font: fonts.at(info-value-font, default: "黑体"),
-        size: 字号.四号,
+        size: 字号.小四,
         weight: "bold",
         bottom-edge: "descender",
         body,
@@ -149,7 +149,7 @@
   
   text(
     font: fonts.黑体,
-    size: 字号.四号,
+    size: 字号.小四,
     weight: "bold",
     info.submit-date
   )

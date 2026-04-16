@@ -159,11 +159,22 @@
     )
   } else {
     (
-      header: {
+      header: context {
         // 重置 footnote 计数器
         if reset-footnote {
           counter(footnote).update(0)
         }
+        stack(
+          align(center, text(size: 字号.五号, "西南交通大学")),
+          v(0.25em),
+          line(length: 100%, stroke: stroke-width + black)
+        )
+      },
+      footer: context {
+        align(center)[
+          #set text(size: 字号.五号)
+          第 #counter(page).display() 页
+        ]
       }
     )
   }))
