@@ -91,12 +91,14 @@
       doc(
         ..args,
         info: info + args.named().at("info", default: (:)),
+        fonts: fonts + args.named().at("fonts", default: (:)),
       )
     },
     preface: (..args) => {
       preface(
         twoside: twoside,
         ..args,
+        fonts: fonts + args.named().at("fonts", default: (:)),
       )
     },
     mainmatter: (..args) => {
