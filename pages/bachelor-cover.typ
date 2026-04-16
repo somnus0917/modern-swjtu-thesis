@@ -13,10 +13,10 @@
   min-title-lines: 2,
   info-inset: (x: 0pt, bottom: 1pt),
   info-key-width: 72pt,
-  info-key-font: "楷体",
-  info-value-font: "楷体",
+  info-key-font: "黑体",
+  info-value-font: "黑体",
   column-gutter: -3pt,
-  row-gutter: 11.5pt,
+  row-gutter: 0pt,
   anonymous-info-keys: ("grade", "student-id", "author", "supervisor", "supervisor-ii"),
   bold-info-keys: ("title",),
   bold-level: "bold",
@@ -25,7 +25,7 @@
   // 1.  默认参数
   fonts = 字体 + fonts
   info = (
-    title: ("基于 Typst 的", "南京大学学位论文"),
+    title: ("（此处为论文题目，黑体 2 号字）"),
     grade: "20XX",
     student-id: "1234567890",
     author: "张三",
@@ -49,13 +49,15 @@
 
   // 3.  内置辅助函数
   let info-key(body) = {
+    set align(right)
     rect(
       width: 100%,
       inset: info-inset,
       stroke: none,
       text(
-        font: fonts.at(info-key-font, default: "楷体"),
-        size: 字号.三号,
+        font: fonts.at(info-key-font, default: "黑体"),
+        size: 字号.四号,
+        weight: "bold",
         body
       ),
     )
@@ -66,11 +68,11 @@
     rect(
       width: 100%,
       inset: info-inset,
-      stroke: (bottom: stroke-width + black),
+      stroke: none,
       text(
-        font: fonts.at(info-value-font, default: "宋体"),
-        size: 字号.三号,
-        weight: if key in bold-info-keys { bold-level } else { "regular" },
+        font: fonts.at(info-value-font, default: "黑体"),
+        size: 字号.四号,
+        weight: "bold",
         bottom-edge: "descender",
         body,
       ),
@@ -110,54 +112,45 @@
   set align(center)
 
   // 匿名化处理去掉封面标识
-  if anonymous {
-    v(52pt)
-  } else {
-    // 封面图标
-    v(6pt)
-    image("../assets/vi/nju-emblem.svg", width: 2.38cm)
-    v(22pt)
-    // 调整一下左边的间距
-    pad(image("../assets/vi/nju-name.svg", width: 10.5cm), left: 0.4cm)
-    v(2pt)
-  }
 
+  v(51pt)
   // 将中文之间的空格间隙从 0.25 em 调整到 0.5 em
-  text(size: 字号.一号, font: fonts.宋体, spacing: 200%, weight: "bold")[本 科 毕 业 论 文]
-  
-  if anonymous {
-    v(155pt)
-  } else {
-    v(67pt)
-  }
+  text(size: 字号.小二, font: fonts.黑体, spacing: 200%)[西 南 交 通 大 学]
+  v(0pt)
+  text(size: 字号.小二, font: fonts.黑体, spacing: 200%)[本科毕业设计（论文）]
+  v(50pt)
+  text(
+    font: fonts.黑体,
+    size: 字号.二号,
+    weight: "bold",
+    spacing: 150%,
+    info.title.filter(s => s != "　").join("")
+  )
 
-  block(width: 318pt, grid(
+  v(122pt)
+
+  block(width: 250pt, grid(
     columns: (info-key-width, 1fr, info-key-width, 1fr),
     column-gutter: column-gutter,
     row-gutter: row-gutter,
-    info-key("学　　院"),
-    info-long-value("department", info.department),
+    info-key("年　　级"),
+    info-long-value("grade", info.grade),
+    info-key("学　　号"),
+    info-long-value("student-id", info.student-id),
+    info-key("姓　　名"),
+    info-long-value("author", info.author),
     info-key("专　　业"),
     info-long-value("major", info.major),
-    info-key("题　　目"),
-    ..info.title.map((s) => info-long-value("title", s)).intersperse(info-key("　")),
-    info-key("年　　级"),
-    info-short-value("grade", info.grade),
-    info-key("学　　号"),
-    info-short-value("student-id", info.student-id),
-    info-key("学生姓名"),
-    info-long-value("author", info.author),
     info-key("指导教师"),
-    info-short-value("supervisor", info.supervisor.at(0)),
-    info-key("职　　称"),
-    info-short-value("supervisor", info.supervisor.at(1)),
-    ..(if info.supervisor-ii != () {(
-      info-key("第二导师"),
-      info-short-value("supervisor-ii", info.supervisor-ii.at(0)),
-      info-key("职　　称"),
-      info-short-value("supervisor-ii", info.supervisor-ii.at(1)),
-    )} else {()}),
-    info-key("提交日期"),
-    info-long-value("submit-date", info.submit-date),
+    info-long-value("supervisor", info.supervisor.at(0)),
   ))
+  
+  v(160pt)
+  
+  text(
+    font: fonts.黑体,
+    size: 字号.四号,
+    weight: "bold",
+    info.submit-date
+  )
 }
