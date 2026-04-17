@@ -7,7 +7,7 @@
   // 布局函数
   twoside, doc, preface, mainmatter, appendix,
   // 页面函数
-  fonts-display-page, cover, decl-page, copyright, evaluation-page, abstract, abstract-en, bilingual-bibliography,
+  fonts-display-page, cover, decl-page, copyright, evaluation-page, task-page, abstract, abstract-en, bilingual-bibliography,
   outline-page, list-of-figures, list-of-tables, notation, acknowledgement,
 ) = documentclass(
   // doctype: "bachelor",  // "bachelor" | "master" | "doctor" | "postdoc", 文档类型，默认为本科生 bachelor
@@ -62,6 +62,9 @@ fonts: (
 
 // 评阅/成绩页
 #evaluation-page()
+
+// 任务书
+#task-page()
 
 // 前言
 #show: preface

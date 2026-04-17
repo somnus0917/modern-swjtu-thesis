@@ -17,6 +17,7 @@
 #import "pages/master-abstract.typ": master-abstract
 #import "pages/bachelor-abstract-en.typ": bachelor-abstract-en
 #import "pages/bachelor-evaluation-page.typ": bachelor-evaluation-page
+#import "pages/bachelor-task-page.typ": bachelor-task-page
 #import "pages/master-abstract-en.typ": master-abstract-en
 #import "pages/bachelor-outline-page.typ": bachelor-outline-page
 #import "pages/list-of-figures.typ": list-of-figures
@@ -198,6 +199,18 @@
     evaluation-page: (..args) => {
       if doctype == "bachelor" {
         bachelor-evaluation-page(
+          anonymous: anonymous,
+          twoside: twoside,
+          ..args,
+          fonts: fonts + args.named().at("fonts", default: (:)),
+          info: info + args.named().at("info", default: (:)),
+        )
+      }
+    },
+    
+    task-page: (..args) => {
+      if doctype == "bachelor" {
+        bachelor-task-page(
           anonymous: anonymous,
           twoside: twoside,
           ..args,
