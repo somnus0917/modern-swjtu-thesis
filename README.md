@@ -1,54 +1,84 @@
-# 南京大学学位论文 modern-nju-thesis
+# 西南交通大学学位论文 modern-swjtu-thesis
 
-南京大学毕业论文（设计）的 Typst 模板，能够简洁、快速、持续生成 PDF 格式的毕业论文。[Typst Universe](https://typst.app/universe/package/modern-nju-thesis)
+西南交通大学（SWJTU）本科毕业设计（论文）的 Typst 模板，基于南京大学的 [modern-nju-thesis](https://github.com/nju-lug/modern-nju-thesis) 进行二次开发，能够简洁、快速、持续生成 PDF 格式的毕业设计和论文任务书等文件。
 
-Typst 非官方中文交流群：793548390
-
-南京大学 Typst 交流群：943622984
+> **当前阶段**：本项目目前已经实现了**本科生毕业设计（论文）**（包括首末页、声明、版权页、任务书、评阅页、中英文摘要、目录及正文排版等），**硕士研究生模板尚未开发**。欢迎各位交大学子 PR 贡献代码！
 
 ![Typst editor interface showing thesis editing](imgs/editor.png)
 
+## 缘起 (为什么有这个项目？)
+
+大家好，我是西南交通大学（SWJTU）的一名普通本科生。在这里我必须大声声明一下：**我不是南京大学的学生哦！** 😂
+
+在准备毕设的过程中，我饱受 Word 排版崩溃、图片乱跑，以及传统 LaTeX 学习曲线陡峭、编译缓慢的折磨。在开源社区冲浪时，我有幸看到了南京大学 NJU-LUG 搞的 `modern-nju-thesis` Typst 模板，瞬间被其优雅的语法和极速的编译折服。
+
+本着“他山之石，可以攻玉”、“交大人也要用上现代优雅排版工具”的执念，我决定站在巨人的肩膀上，自己动手爆改出咱们西南交大的版本！希望这个由交大学子自己动手搓出来的民间模板，能帮你省下和排版作斗争的精力和头发，把更多时间留给真正有价值的论文内容（或者多睡一会儿觉）。
+
 ## 劣势
 
-- Typst 是一门新生的排版标记语言，还做不到像 Word 或 LaTeX 一样成熟稳定。
-- 该模板并非官方模板，而是民间模板，**存在不被认可的风险**。
+- Typst 是一门新生的排版标记语言，生态还在飞速发展中，可能偶尔会遇到一些小 bug。
+- 该模板并非校方官方模板，而是我们交大学生自发维护的民间模板，**提交前请务必和指导老师确认排版格式的合规性，可能存在最终打印格式不被认可的风险**。
 
 ## 优势
 
-Typst 是可用于出版的可编程标记语言，拥有变量、函数与包管理等现代编程语言的特性，注重于科学写作 (science writing)，定位与 LaTeX 相似。可以阅读我的 [一篇知乎文章](https://zhuanlan.zhihu.com/p/669097092) 进一步了解 Typst 的优势。
+Typst 是可用于出版的可编程标记语言，拥有变量、函数与包管理等现代编程语言的特性，注重于科学写作 (science writing)，定位与 LaTeX 相似。
 
-- **语法简洁**：上手难度跟 Markdown 相当，文本源码阅读性高，不会像 LaTeX 一样充斥着反斜杠与花括号。
-- **编译速度快**：Typst 使用 Rust 语言编写，目标运行平台是WASM，即浏览器本地离线运行；也可以编译成命令行工具，采用一种 **增量编译** 算法和一种有约束的版面缓存方案，**文档长度基本不会影响编译速度，且编译速度与常见 Markdown 渲染引擎渲染速度相当**。
-- **环境搭建简单**：不需要像 LaTeX 一样折腾几个 G 的开发环境，原生支持中日韩等非拉丁语言，无论是官方 Web App 在线编辑，还是使用 VS Code 安装插件本地开发，都是 **即开即用**。
-- **现代编程语言**：Typst 是可用于出版的可编程标记语言，拥有 **变量、函数、包管理与错误检查** 等现代编程语言的特性，同时也提供了 **闭包** 等特性，便于进行 **函数式编程**。以及包括了 `[标记模式]`、`{脚本模式}` 与 `$数学模式$` 等多种模式的作用域，并且它们可以不限深度地、交互地嵌套。并且通过 **包管理**，你不再需要像 TexLive 一样在本地安装一大堆并不必要的宏包，而是 **按需自动从云端下载**。
+- **语法简洁**：上手难度跟 Markdown 相当，文本源码阅读性极高，摆脱了反斜杠与花括号的噩梦。
+- **编译神速**：Typst 采用增量的 Rust 编译引擎，无论是终端执行还是 VS Code 插件内都是几十毫秒级的无缝渲染。
+- **环境搭建极简**：不再需要安装好几个 G 且动不动报错的 TexLive 庞然大物，一个很小的便携插件即插即用。
+- **现代语言心智**：原生支持中日韩字符，而且提供函数式闭包排版写法。
 
-可以参考我参与搭建和翻译的 [Typst 中文文档网站](https://typst-doc-cn.github.io/docs/) 迅速入门。
+可以参考 [Typst 中文文档网站](https://typst-doc-cn.github.io/docs/) 迅速入门。
 
-## 使用
+## 使用指北
 
-快速浏览效果: 查看 [thesis.pdf](https://github.com/nju-lug/modern-nju-thesis/releases/latest/download/thesis.pdf)，样例论文源码：查看 [thesis.typ](https://github.com/nju-lug/modern-nju-thesis/blob/main/template/thesis.typ)
+**样例论文及入口**：查看项目目录下的 `template/thesis.typ`。你主要在这个文件里填空和书写即可。
 
-**你只需要修改 `thesis.typ` 文件即可，基本可以满足你的所有需求。**
+### 本地编译（强烈推荐）
 
-如果你认为不能满足你的需求，可以先查阅后面的 [Q&A](#Q%26A) 部分。
+推荐使用 VS Code 搭配 [Tinymist Typst](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist) 插件进行本地编写与实时双向预览。
 
-模板已经上传到了 Typst Universe，使用起来十分简单，理论上只需要通过
+1. 克隆本仓库到本地。
+2. **安装字体**：模板依赖于一些常见的三方字体来进行国标和校标排版。请确保你的系统安装了以下字体（或将它们放到你系统的可用字体目录）：
+   - `Times New Roman`、`Arial` (常用英文字体)
+   - `FZKai-Z03S` (方正楷体)
+   - `FZFangSong-Z02S` (方正仿宋)
+   - `Source Han Sans SC` (思源黑体)
+3. 用 VS Code 打开该文件夹。
+4. 打开 `template/thesis.typ`，安装好 Tinymist 插件后，点击右上角的预览按钮（或者快捷键）即可在侧边实时渲染。
+5. 或者在终端执行：
+   ```bash
+   typst compile template/thesis.typ
+   ```
 
-```typst
-#import "@preview/modern-nju-thesis:0.4.1": documentclass
-```
+### 目录结构简析
 
-导入即可。
+- `template/thesis.typ`: 论文的**主入口文件**。所有的个人信息（题目、作者、班级、学号等）、各个核心章节的正文都在这里调用。如果要分多文件写论文，可以用 `#include "章节1.typ"` 的方式引入。
+- `pages/`: 存放了各个特定独立页面的模板函数，比如：
+  - `bachelor-task-page.typ` (西南交大的任务书排版实现)
+  - `bachelor-evaluation-page.typ` (西南交大的评阅/成绩单排版实现)
+  - `bachelor-cover.typ` (本科标准封面封面)
+  - ... (后续若有同学贡献硕士模板也会存在这里)
+- `layouts/`: 存放全局排版布局（用来控制正文字号、行距、多级标题的 `mainmatter.typ` 等）。
 
-### 在线编辑
+## 参与贡献
 
-Typst 提供了官方的 Web App，支持像 Overleaf 一样在线编辑，这是一个 [例子](https://typst.app/project/rgiwHIjdPOnXr9HJb8H0oa)。
+- 欢迎直接在 Issues 中提出你的想法或 Bug 汇报。
+- 如果你把硕士研究生的格式也啃下来了，强烈欢迎提出你的 PR。咱们交大兄弟姐妹一起维护传承下去！
 
-实际上，我们只需要在 [Web App](https://typst.app/?template=modern-nju-thesis&version=0.4.1) 中的 `Start from template` 里选择 `modern-nju-thesis`，即可在线创建模板并使用。
+## 致谢 & 饮水思源
 
-![Template selection in Typst Web App](imgs/template.png)
+本项目核心排版逻辑和底层架构**大量借鉴且修改**自南京大学 Linux User Group (NJU-LUG) 开源的现代学位论文模板：
 
-![Typst Web App interface](imgs/webapp.png)
+- [nju-lug/modern-nju-thesis](https://github.com/nju-lug/modern-nju-thesis)
+
+向原作者 [OrangeX4](https://github.com/OrangeX4) 以及它的所有贡献者们致以最诚挚的敬意！没有前辈铺好的路，就没有现在这个爆改版。也感谢 Typst 中文开源社区的所有布道者。
+
+## License
+
+这个项目继续使用 MIT License 开源，各位交大学子尽情享用。
+
+![Typst Web App interface](imgs/demo.png)
 
 **但是 Web App 并没有安装本地 Windows 或 MacOS 所拥有的字体，所以字体上可能存在差异，所以推荐本地编辑！**
 
@@ -88,11 +118,13 @@ PS: 虽然与 Overleaf 看起来相似，但是它们底层原理并不相同。
     - [x] 表格目录
     - [x] 符号表
     - [x] 致谢
-  - [x] 研究生模板
-    - [x] 封面
-    - [x] 声明页
-    - [x] 摘要
-    - [x] 页眉
+    - [x] 任务书
+    - [x] 评阅页/成绩单
+  - [ ] 研究生模板 (尚未移植，欢迎 PR!)
+    - [ ] 封面
+    - [ ] 声明页
+    - [ ] 摘要
+    - [ ] 页眉
     - [ ] 国家图书馆封面
     - [ ] 出版授权书
   - [ ] 博士后模板
@@ -105,7 +137,7 @@ PS: 虽然与 Overleaf 看起来相似，但是它们底层原理并不相同。
   - [ ] 定理环境（这个也可以自己使用第三方包配置）
 - **其他文件**
   - [x] 本科生开题报告
-  - [x] 研究生开题报告
+  - [ ] 研究生开题报告
 
 ## 其他文件
 
