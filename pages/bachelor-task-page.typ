@@ -18,10 +18,10 @@
       #v(-0.5em)
       #line(length: 100%, stroke: 0.5pt)
     ],
-    footer: [
-      #set text(font: fonts.宋体, size: 字号.小五)
-      #align(center)[第II页]
-    ]
+    footer: context {
+      set text(font: fonts.宋体, size: 字号.小五)
+      align(center)[第#counter(page).display("I")页]
+    }
   )[
     #set text(font: fonts.宋体, size: 字号.小四)
     // 修改 leading 来调整段落文字的基础行间距，原为 1.5em，这里缩小为 1.2em

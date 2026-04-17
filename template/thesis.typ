@@ -60,14 +60,14 @@ fonts: (
 // 版权页
 #copyright()
 
+// 前言 (重置页码为 I)
+#show: preface
+
 // 评阅/成绩页
 #evaluation-page()
 
 // 任务书
 #task-page()
-
-// 前言
-#show: preface
 
 // 中文摘要
 #abstract(
@@ -127,7 +127,7 @@ fonts: (
 
 == 图表
 
-引用@tbl:timing，引用@tbl:timing-tlt，以及@fig:nju-logo。引用图表时，表格和图片分别需要加上 `tbl:`和`fig:` 前缀才能正常显示编号。
+引用@tbl:timing，引用@tbl:timing-tlt，以及@fig:swjtu-logo。引用图表时，表格和图片分别需要加上 `tbl:`和`fig:` 前缀才能正常显示编号。
 
 #align(center, (stack(dir: ltr)[
   #figure(
@@ -157,9 +157,9 @@ fonts: (
 ]))
 
 #figure(
-  image("images/nju-emblem.svg", width: 20%),
+  image("images/swjtu-logo.svg", width: 20%),
   caption: [图片测试],
-) <nju-logo>
+) <swjtu-logo>
 
 
 == 数学公式
@@ -217,7 +217,7 @@ $ F_n = floor(1 / sqrt(5) phi.alt^n) $
 
 // 致谢
 #acknowledgement[
-  感谢 NJU-LUG，感谢 NJUThesis LaTeX 模板。
+  感谢 NJU-LUG，提供了原始模板，感谢typst团队，提供了强大的工具，以及所有为这个项目提出过建议的同学们。
 ]
 
 // 手动分页
@@ -238,6 +238,6 @@ $ F_n = floor(1 / sqrt(5) phi.alt^n) $
 附录内容，这里也可以加入图片，例如@fig:appendix-img。
 
 #figure(
-  image("images/nju-emblem.svg", width: 20%),
+  image("images/swjtu-logo.svg", width: 20%),
   caption: [图片测试],
 ) <appendix-img>

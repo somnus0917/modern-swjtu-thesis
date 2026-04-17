@@ -165,7 +165,7 @@
           counter(footnote).update(0)
         }
         stack(
-          align(center, text(font: fonts.宋体, size: 字号.五号, "西南交通大学")),
+          align(center, text(font: fonts.宋体, size: 字号.五号, "西南交通大学本科毕业设计（论文）")),
           v(0.25em),
           line(length: 100%, stroke: stroke-width + black)
         )
@@ -179,12 +179,10 @@
     )
   }))
   context {
-  if calc.even(here().page()){
-    set page(numbering: "I",header: none)
-    // counter(page).update(1)
-  pagebreak() + " "
-}
-}
+    if calc.even(here().page()) {
+      page(header: none, footer: none)[]
+    }
+  }
   counter(page).update(1)
 
   it

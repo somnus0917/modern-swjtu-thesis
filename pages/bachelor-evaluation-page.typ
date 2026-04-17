@@ -18,10 +18,10 @@
       #v(-0.5em)
       #line(length: 100%, stroke: 0.5pt)
     ],
-    footer: [
-      #set text(font: fonts.宋体, size: 字号.小五)
-      #align(center)[第1页]
-    ]
+    footer: context {
+      set text(font: fonts.宋体, size: 字号.小五)
+      align(center)[第#counter(page).display("I")页]
+    }
   )[
     #set text(font: fonts.宋体, size: 字号.小四)
     #set par(leading: 1.5em, first-line-indent: 0em)
