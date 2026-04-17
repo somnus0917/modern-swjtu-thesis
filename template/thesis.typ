@@ -7,7 +7,7 @@
   // 布局函数
   twoside, doc, preface, mainmatter, appendix,
   // 页面函数
-  fonts-display-page, cover, decl-page, abstract, abstract-en, bilingual-bibliography,
+  fonts-display-page, cover, decl-page, copyright, abstract, abstract-en, bilingual-bibliography,
   outline-page, list-of-figures, list-of-tables, notation, acknowledgement,
 ) = documentclass(
   // doctype: "bachelor",  // "bachelor" | "master" | "doctor" | "postdoc", 文档类型，默认为本科生 bachelor
@@ -56,6 +56,9 @@ fonts: (
 
 // 声明页
 #decl-page()
+
+// 版权页
+#copyright()
 
 
 // 前言

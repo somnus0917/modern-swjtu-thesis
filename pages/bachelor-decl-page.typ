@@ -14,16 +14,6 @@
 
   // 1.  默认参数
   fonts = 字体 + fonts
-  info = (
-    title: ("基于 Typst 的", "南京大学学位论文"),
-  ) + info
-
-  // 2.  对参数进行处理
-  // 2.1 如果是字符串，则使用换行符将标题分隔为列表
-  if type(info.title) == str {
-    info.title = info.title.split("\n")
-  }
-
 
   // 3.  正式渲染
   pagebreak(weak: true, to: if twoside { "odd" })

@@ -9,6 +9,7 @@
 #import "layouts/appendix.typ": appendix
 #import "pages/fonts-display-page.typ": fonts-display-page
 #import "pages/bachelor-cover.typ": bachelor-cover
+#import "pages/bachelor-copyright.typ": bachelor-copyright
 #import "pages/master-cover.typ": master-cover
 #import "pages/bachelor-decl-page.typ": bachelor-decl-page
 #import "pages/master-decl-page.typ": master-decl-page
@@ -176,6 +177,18 @@
           ..args,
           fonts: fonts + args.named().at("fonts", default: (:)),
           info: info + args.named().at("info", default: (:)),
+        )
+      }
+    },
+
+    // 版权页
+    copyright: (..args) => {
+      if doctype == "bachelor" {
+        bachelor-copyright(
+          anonymous: anonymous,
+          twoside: twoside,
+          ..args,
+          fonts: fonts + args.named().at("fonts", default: (:)),
         )
       }
     },
