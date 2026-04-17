@@ -57,7 +57,6 @@
       text(
         font: fonts.at(info-key-font, default: "黑体"),
         size: 字号.小四,
-        weight: "bold",
         body
       ),
     )
@@ -72,7 +71,6 @@
       text(
         font: fonts.at(info-value-font, default: "黑体"),
         size: 字号.小四,
-        weight: "bold",
         bottom-edge: "descender",
         body,
       ),
@@ -122,7 +120,6 @@
   text(
     font: fonts.黑体,
     size: 字号.二号,
-    weight: "bold",
     spacing: 150%,
     info.title.filter(s => s != "　").join("")
   )
@@ -150,7 +147,6 @@
   text(
     font: fonts.黑体,
     size: 字号.小四,
-    weight: "bold",
     info.submit-date
   )
 }

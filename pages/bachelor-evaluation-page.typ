@@ -37,11 +37,11 @@
       columns: (4em, 1fr, 4em, 1fr),
       row-gutter: 0.5em,
       column-gutter: 0.5em,
-      [院#h(1em)系], field(content: info.at("department", default: "")),
-      [专#h(1em)业], field(content: info.at("major", default: "")),
-      [年#h(1em)级], field(content: info.at("grade", default: "")),
-      [姓#h(1em)名], field(content: info.at("author", default: "")),
-      [题#h(1em)目], grid.cell(colspan: 3, field(content: title-text))
+      [院#h(1em)系], field(),
+      [专#h(1em)业], field(),
+      [年#h(1em)级], field(),
+      [姓#h(1em)名], field(),
+      [题#h(1em)目], grid.cell(colspan: 3, field())
     )
 
     #v(1em)

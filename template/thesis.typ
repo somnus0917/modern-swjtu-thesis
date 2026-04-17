@@ -18,11 +18,11 @@
   // 你可以自定义字体消除警告，先英文字体后中文字体，应传入「宋体」、「黑体」、「楷体」、「仿宋」、「等宽」
 
 fonts: (
-  宋体: ("FZFangSong-Z02S", "Times New Roman"),
-  黑体: ("Arial", "Source Han Sans SC", "Source Han Sans"),
-  楷体: ("Times New Roman", "FZKai-Z03S"),
-  仿宋: ("Times New Roman", "FZFangSong-Z02S"),
-  等宽: ("Courier New", "Menlo", "IBM Plex Mono", "Source Han Sans SC", "Source Han Sans"),
+  宋体: ("Times New Roman", "FZFangSong-Z02S", "SimSun", "Noto Serif CJK SC"),
+  黑体: ("Arial", "Source Han Sans CN", "SimHei", "Noto Sans CJK SC"),
+  楷体: ("Times New Roman", "FZKai-Z03S", "KaiTi", "Noto Serif CJK SC"),
+  仿宋: ("Times New Roman", "FZFangSong-Z02S", "FangSong", "Noto Serif CJK SC"),
+  等宽: ("Courier New", "Menlo", "IBM Plex Mono", "Source Han Sans SC", "Noto Sans CJK SC"),
 ),
   info: (
     title: ("（此处为论文题目，黑体 2 号字）"),
