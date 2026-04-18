@@ -90,7 +90,7 @@ PS: 虽然与 Overleaf 看起来相似，但是它们底层原理并不相同。
 ### 特性 / 路线图
 
 - **说明文档**
-  - 编写更详细的说明文档，后续考虑使用 [tidy](https://github.com/typst/packages/blob/main/packages/preview/tidy/0.1.0) 编写，你现在可以先参考 [NJUThesis](https://mirror-hk.koddos.net/CTAN/macros/unicodetex/latex/njuthesis/njuthesis.pdf) 的文档，参数大体保持一致，或者直接查阅对应源码函数的参数
+
 - **类型检查**
   - 应该对所有函数入参进行类型检查，及时报错
 - **全局配置**
@@ -252,8 +252,6 @@ PS: 虽然与 Overleaf 看起来相似，但是它们底层原理并不相同。
 ```
 
 即可。
-
-后续我也会编写一个更详细的文档，可能会考虑使用 [tidy](https://github.com/typst/packages/blob/main/packages/preview/tidy/0.1.0) 来编写。
 
 如果你阅读了那些函数的参数，仍然不知道如何修改得到你需要的样式，欢迎提出 Issue，只要描述清楚问题即可。
 
