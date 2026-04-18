@@ -1,6 +1,6 @@
 [package]
 name = "modern-swjtu-thesis"
-version = "0.1.1"
+version = "0.1.0"
 entrypoint = "lib.typ"
 authors = ["somnus<@somnus0917>"]
 license = "MIT"
@@ -8,7 +8,7 @@ description = "西南交通大学学位论文模板。Modern Southwest Jiaotong 
 repository = "https://github.com/somnus0917/modern-swjtu-thesis"
 keywords = ["Southwest Jiaotong University", "thesis"]
 categories = ["thesis"]
-exclude = ["imgs"]
+exclude = ["imgs", "fonts"]
 compiler = "0.13.0"
 
 [template]
