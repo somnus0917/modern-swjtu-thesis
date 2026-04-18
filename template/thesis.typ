@@ -132,7 +132,7 @@ fonts: (
 
 == 图表
 
-引用@tbl:timing，引用@tbl:timing-tlt，以及@fig:swjtu-logo。引用图表时，表格和图片分别需要加上 `tbl:`和`fig:` 前缀才能正常显示编号。
+// 引用@tbl:timing，引用@tbl:timing-tlt，以及@fig:swjtu-logo。引用图表时，表格和图片分别需要加上 `tbl:`和`fig:` 前缀才能正常显示编号。
 
 // 注意：图片示例已被注释，如需使用请取消注释并确保 template/images/ 目录下有相应图片
 /*
@@ -245,7 +245,7 @@ $ F_n = floor(1 / sqrt(5) phi.alt^n) $
 
 === 附录子子标题
 
-附录内容，这里也可以加入图片，例如@fig:appendix-img。
+// 附录内容，这里也可以加入图片，例如@fig:appendix-img。
 
 /*
 #figure(
