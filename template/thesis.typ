@@ -1,7 +1,14 @@
 #import "../lib.typ": documentclass
 
-// 你首先应该安装 https://github.com/nju-lug/modern-nju-thesis/tree/main/fonts/FangZheng 里的所有字体，
-// 如果是 Web App 上编辑，你应该手动上传这些字体文件，否则不能正常使用「楷体」和「仿宋」，导致显示错误。
+// 字体说明：
+// 本模板使用系统字体，请在你的系统中安装以下字体：
+// - Times New Roman、Arial、Courier New (英文字体)
+// - SimSun、SimHei、KaiTi、FangSong (Windows 中文字体)
+// - Songti SC、Heiti SC、Kaiti SC (macOS 中文字体)
+// - Noto Serif CJK SC、Noto Sans CJK SC (开源中文字体)
+// - Source Han Sans SC (思源黑体)
+//
+// 如果某些字体未安装，Typst 会自动使用 fallback 字体。
 
 #let (
   // 布局函数
@@ -14,15 +21,13 @@
   // degree: "academic",  // "academic" | "professional", 学位类型，默认为学术型 academic
   // anonymous: true,  // 盲审模式
   twoside: false,  // 双面模式，会加入空白页，便于打印
-  // 你会发现 Typst 有许多警告，这是因为 modern-nju-thesis 加入了很多不必要的 fallback 字体
-  // 你可以自定义字体消除警告，先英文字体后中文字体，应传入「宋体」、「黑体」、「楷体」、「仿宋」、「等宽」
 
 fonts: (
-  宋体: ("Times New Roman", "FZFangSong-Z02S", "SimSun", "Noto Serif CJK SC"),
-  黑体: ("Arial", "Source Han Sans CN", "SimHei", "Noto Sans CJK SC"),
-  楷体: ("Times New Roman", "FZKai-Z03S", "KaiTi", "Noto Serif CJK SC"),
-  仿宋: ("Times New Roman", "FZFangSong-Z02S", "FangSong", "Noto Serif CJK SC"),
-  等宽: ("Courier New", "Menlo", "IBM Plex Mono", "Source Han Sans SC", "Noto Sans CJK SC"),
+  宋体: ("Times New Roman", "SimSun", "Noto Serif CJK SC"),
+  黑体: ("Arial", "SimHei", "Noto Sans CJK SC"),
+  楷体: ("Times New Roman", "KaiTi", "Noto Serif CJK SC"),
+  仿宋: ("Times New Roman", "FangSong", "Noto Serif CJK SC"),
+  等宽: ("Courier New", "Menlo", "IBM Plex Mono"),
 ),
   info: (
     title: ("（此处为论文题目，黑体 2 号字）"),

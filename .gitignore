@@ -1,0 +1,17 @@
+# Typst package exclude
+fonts/
+imgs/
+
+# Typst compilation output
+*.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
