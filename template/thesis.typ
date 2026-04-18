@@ -1,5 +1,4 @@
-#import "@preview/modern-swjtu-thesis:0.1.2": documentclass
-
+#import "../lib.typ": documentclass
 // 字体说明：
 // 本模板使用系统字体，请在你的系统中安装以下字体：
 // - Times New Roman、Arial、Courier New (英文字体)
