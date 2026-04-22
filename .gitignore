@@ -15,3 +15,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# my thesis local
+thesis/
+.codex

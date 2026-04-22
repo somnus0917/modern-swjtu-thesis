@@ -56,8 +56,9 @@
       #body
     ]
 
-    #v(45em)
+    #v(1fr)
 
     keywords: #(("",)+ keywords.intersperse("; ")).sum()
+    #v(10em)
   ]
 }
