@@ -55,6 +55,6 @@
     #v(1fr)
 
     #fakebold[关键词：]#(("",)+ keywords.intersperse("；")).sum()
-    #v(10em)
+    #v(5em)
   ]
 }

@@ -35,9 +35,9 @@
   }
 
   // 4.  正式渲染
-  [
-    #pagebreak(weak: true, to: if twoside { "odd" })
+  pagebreak(weak: true, to: if twoside { "odd" })
 
+  [
     #set text(font: fonts.楷体, size: 字号.小四)
     #set par(leading: leading, justify: true, spacing: spacing)
 
@@ -48,8 +48,6 @@
       #text(font:fonts.楷体, size:字号.小二, tracking: 0.1em)[#fakebold[Abstract]] 
     ]
 
-    #v(2pt)
-
     #[
       #set par(first-line-indent: (amount: 2em, all: true))
       
@@ -58,7 +56,7 @@
 
     #v(1fr)
 
-    keywords: #(("",)+ keywords.intersperse("; ")).sum()
-    #v(10em)
+    #fakebold[Key Words:] #(("",)+ keywords.intersperse("; ")).sum()
+    #v(5em)
   ]
 }
