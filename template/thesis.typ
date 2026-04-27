@@ -21,10 +21,15 @@
   twoside: false,  // 双面模式，会加入空白页，便于打印
 
 fonts: (
-  宋体: ("Times New Roman", "SimSun", "Noto Serif CJK SC"),
-  黑体: ("Arial", "SimHei", "Noto Sans CJK SC"),
-  楷体: ("Times New Roman", "KaiTi", "Noto Serif CJK SC"),
-  仿宋: ("Times New Roman", "FangSong", "Noto Serif CJK SC"),
+  // 增加了 Songti SC (macOS 自带宋体)
+  宋体: ("Times New Roman", "SimSun", "Noto Serif CJK SC", "Songti SC", "STSong"),
+  // 增加了 PingFang SC (macOS 自带黑体，即苹方)
+  黑体: ("Arial", "SimHei", "Noto Sans CJK SC", "PingFang SC", "STHeiti"),
+  // 增加了 Kaiti SC (macOS 自带楷体)
+  楷体: ("Times New Roman", "KaiTi", "Noto Serif CJK SC", "Kaiti SC", "STKaiti"),
+  // 增加了 Fang Song (macOS 自带仿宋)
+  仿宋: ("Times New Roman", "FangSong", "Noto Serif CJK SC", "Fang Song", "STFangsong"),
+  // 等宽字体一般 Mac 都有 Menlo，这部分不需要大动
   等宽: ("Courier New", "Menlo", "IBM Plex Mono"),
 ),
   info: (
