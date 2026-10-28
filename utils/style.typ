@@ -33,3 +33,7 @@
   // 这一行分别是「Courier New（Windows 等宽英文字体）」、「Menlo（macOS 等宽英文字体）」、「IBM Plex Mono」
   等宽: ((name: "Courier New", covers: "latin-in-cjk"), (name: "Menlo", covers: "latin-in-cjk"), (name: "IBM Plex Mono", covers: "latin-in-cjk")),
 )
+
+// 中文字体（SimSun、SimHei 等）通常没有真正的粗体字面，Typst 设置 weight: "bold"
+// 时会静默回退到常规字重。需要加粗时在同一个 text() 中加上
+// `stroke: 0.02em + 0.3pt` 模拟 Word 的合成加粗（fake bold）。

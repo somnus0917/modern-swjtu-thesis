@@ -1,17 +1,18 @@
-[package]
+﻿[package]
 name = "modern-swjtu-thesis"
-version = "0.1.4"
+version = "0.2.0"
 entrypoint = "lib.typ"
 authors = ["somnus<@somnus0917>"]
 license = "MIT"
-description = "A modern thesis template for Southwest Jiaotong University (SWJTU)"
+description = "A modern thesis template for Southwest Jiaotong University (SWJTU), supporting bachelor and master theses and course assignments"
 repository = "https://github.com/somnus0917/modern-swjtu-thesis"
-keywords = ["Southwest Jiaotong University", "thesis"]
+keywords = ["Southwest Jiaotong University", "thesis", "bachelor thesis", "master thesis", "course assignment", "课程作业"]
 categories = ["thesis"]
-exclude = ["imgs", "fonts", "assets", "*.pdf", "*_FIXES*.md", "others"]
+exclude = ["imgs", "fonts", "assets", "*.pdf", "*_FIXES*.md", "others", "build", "scripts", "tests"]
 compiler = "0.13.0"
 
 [template]
 path = "template"
 entrypoint = "thesis.typ"
 thumbnail = "thumbnail.png"
+

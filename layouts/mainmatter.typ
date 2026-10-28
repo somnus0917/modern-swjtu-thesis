@@ -24,18 +24,38 @@
   heading-below: (2 * 15.6pt - 0.7em, 1.5 * 15.6pt - 0.7em),
   heading-pagebreak: (true, false),
   heading-align: (center, auto),
+  // 一级标题距页面上边距的额外距离（Typst 会丢弃页首的块间距，故用显式 v 补足）
+  heading-top-space: 0pt,
   // 页眉
   header-render: auto,
   header-vspace: 0em,
   display-header: false,
   skip-on-first-level: true,
   stroke-width: 0.8mm,
+  // 是否在章标题处自动分页，并（双面模式下）确保章首页位于奇数页
+  // 单页页眉文字，auto 时使用本科毕业设计（论文）的页眉
+  header-text: auto,
+  header-font: auto,
+  header-size: auto,
+  header-stroke: 0.8mm,
+  // 页脚样式："prefix" 为「第 X 页」，"plain" 为纯页码
+  footer-style: "prefix",
+  footer-size: auto,
+  // 页眉、页脚相对内容区的距离（none 表示使用 Typst 默认值）
+  page-header-ascent: none,
+  page-footer-descent: none,
+  // 正文开始前若当前页为偶数页，是否插入空白页（双面打印用）
+  blank-page-before: true,
   reset-footnote: true,
   // caption 的 separator
   separator: " ",
   // caption 样式
   caption-style: strong,
   caption-size: 字号.五号,
+  // 图表整体段前段后距，以及图表与图题之间的间距（硕士用 12 / 12 / 6）
+  figure-above: auto,
+  figure-below: auto,
+  figure-gap: 0.65em,
   // figure 计数
   show-figure: i-figured.show-figure.with(numbering: "1-1"),
   // equation 计数
@@ -57,7 +77,20 @@
   if heading-font == auto {
     heading-font = (fonts.黑体,)
   }
-  // 1.2 处理 heading- 开头的其他参数
+  // 1.2 页眉页脚默认参数
+  if header-text == auto {
+    header-text = "西南交通大学本科毕业设计（论文）"
+  }
+  if header-font == auto {
+    header-font = fonts.黑体
+  }
+  if header-size == auto {
+    header-size = 字号.小四
+  }
+  if footer-size == auto {
+    footer-size = 字号.小四
+  }
+  // 1.3 处理 heading- 开头的其他参数
   let heading-text-args-lists = args.named().pairs()
     .filter((pair) => pair.at(0).starts-with("heading-"))
     .map((pair) => (pair.at(0).slice("heading-".len()), pair.at(1)))
@@ -91,6 +124,9 @@
   set figure.caption(separator: separator)
   show figure.caption: caption-style
   show figure.caption: set text(font: fonts.宋体, size: 字号.五号)
+  // 3.5.1 图表与图题的段间距：表题在表上方，图题在图下方
+  set figure(gap: figure-gap)
+  show figure: set block(above: figure-above, below: figure-below)
   // 3.6 优化列表显示
   //     术语列表 terms 不应该缩进
   show terms: set par(first-line-indent: 0pt)
@@ -100,10 +136,13 @@
   set heading(numbering: numbering)
   // 4.2 设置字体字号并加入假段落模拟首行缩进
   show heading: it => {
+    let weight = array-at(heading-weight, it.level)
     set text(
       font: array-at(heading-font, it.level),
       size: array-at(heading-size, it.level),
-      weight: array-at(heading-weight, it.level),
+      weight: weight,
+      // 中文字体没有真正的粗体字面，用描边模拟 Word 的合成加粗
+      stroke: if weight == "bold" { 0.015em + 0.25pt } else { none },
       ..unpairs(heading-text-args-lists
         .map((pair) => (pair.at(0), array-at(pair.at(1), it.level))))
     )
@@ -121,6 +160,9 @@
         pagebreak(weak: true)
       }
     }
+    if it.level == 1 and heading-top-space != 0pt {
+      v(heading-top-space)
+    }
     if array-at(heading-align, it.level) != auto {
       set align(array-at(heading-align, it.level))
       it
@@ -129,14 +171,14 @@
     }
   }
 
-  // 5.  处理页眉
-  set page(..(if display-header {
-    (
-      header: context {
-        // 重置 footnote 计数器
-        if reset-footnote {
-          counter(footnote).update(0)
-        }
+  // 5.  处理页眉页脚
+  set page(
+    header: context {
+      // 重置 footnote 计数器
+      if reset-footnote {
+        counter(footnote).update(0)
+      }
+      if display-header {
         let loc = here()
         // 5.1 获取当前页面的一级标题
         let cur-heading = current-heading(level: 1)
@@ -157,35 +199,37 @@
           }
           v(header-vspace)
         }
-      }
-    )
-  } else {
-    (
-      header: context {
-        // 重置 footnote 计数器
-        if reset-footnote {
-          counter(footnote).update(0)
-        }
+      } else {
         stack(
-          align(center, text(font: fonts.黑体, size: 字号.小四, "西南交通大学本科毕业设计（论文）")),
+          align(center, text(font: header-font, size: header-size, header-text)),
           v(0.25em),
-          line(length: 100%, stroke: stroke-width + black)
+          line(length: 100%, stroke: header-stroke + black),
         )
-      },
-      footer: context {
-        align(center)[
-          #set text(font: fonts.宋体, size: 字号.小四)
-          第#counter(page).display()页
-        ]
       }
-    )
-  }))
-  context {
-    if calc.even(here().page()) {
-      page(header: none, footer: none)[]
+    },
+    footer: context {
+      align(center, if footer-style == "plain" {
+        text(font: fonts.宋体, size: footer-size, counter(page).display())
+      } else {
+        text(font: fonts.宋体, size: footer-size)[第#counter(page).display()页]
+      })
+    },
+    ..(if page-header-ascent != none { (header-ascent: page-header-ascent) } else { (:) }),
+    ..(if page-footer-descent != none { (footer-descent: page-footer-descent) } else { (:) }),
+  )
+  if blank-page-before {
+    context {
+      if calc.even(here().page()) {
+        page(header: none, footer: none)[]
+      }
     }
   }
   counter(page).update(1)
 
   it
 }
+
+
+
+
+

@@ -1,6 +1,7 @@
-#import "@preview/i-figured:0.2.4"
+﻿#import "@preview/i-figured:0.2.4"
 #import "../utils/invisible-heading.typ": invisible-heading
 #import "../utils/style.typ": 字号, 字体
+#import "../layouts/master-preface.typ": master-header, master-footer
 
 // 表格目录生成
 #let list-of-figures(
@@ -9,6 +10,8 @@
   fonts: (:),
   // 其他参数
   title: "插图目录",
+  // 传入页眉标题时按硕士模板样式设置页眉页脚（研究生论文）
+  header-title: auto,
   outlined: false,
   title-vspace: 32pt,
   title-text-args: auto,
@@ -31,30 +34,48 @@
   }
 
   // 2.  正式渲染
-  pagebreak(weak: true, to: if twoside { "odd" })
+  let render = {
+    // 默认显示的字体
+    set text(font: font, size: size)
 
-  // 默认显示的字体
-  set text(font: font, size: size)
+    {
+      set align(center)
+      text(..title-text-args, title)
+      // 标记一个不可见的标题用于目录生成
+    }
 
-  {
-    set align(center)
-    text(..title-text-args, title)
-    // 标记一个不可见的标题用于目录生成
-    invisible-heading(level: 1, outlined: outlined, title)
+    v(title-vspace)
+
+    show outline.entry: set block(
+      above: above,
+      below: below,
+    )
+
+    // 显示目录
+    i-figured.outline(target-kind: image, title: none)
+
+    // 手动分页
+    if twoside {
+      pagebreak() + " "
+    }
   }
 
-  v(title-vspace)
-
-  show outline.entry: set block(
-    above: above,
-    below: below,
-  )
-
-  // 显示目录
-  i-figured.outline(target-kind: image, title: none)
-
-  // 手动分页
-  if twoside {
-    pagebreak() + " "
+  if header-title == auto {
+    pagebreak(weak: true, to: if twoside { "odd" })
+    render
+  } else {
+    // 研究生模板：设置页眉（图目录）与页脚（罗马数字页码）
+    pagebreak(weak: true)
+    set page(
+      margin: 3cm,
+      header-ascent: 7.4pt,
+      footer-descent: 0pt,
+      header: master-header(header-title, fonts: fonts),
+      footer: master-footer(numbering: "I", fonts: fonts),
+    )
+    v(28.94pt)
+    render
   }
 }
+
+

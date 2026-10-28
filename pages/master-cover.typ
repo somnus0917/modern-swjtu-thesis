@@ -1,8 +1,13 @@
-#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
-#import "../utils/justify-text.typ": justify-text
+﻿#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
 #import "../utils/style.typ": 字号, 字体
+#import "../utils/fill-field.typ": fill-field
+#import "../layouts/master-preface.typ": master-pagebreak
 
-// 硕士研究生封面
+// 硕士研究生封面（中文封面 + 英文扉页）
+// 按 Word 原版 PDF 的文字基线和填写线锚点布局：
+//   - 中文封面：分类号/密级/单位代码、校名、学位类别、加下划线的题目、五个栏目、日期；
+//   - 英文扉页：提交说明、英文题目、Discipline 等栏目、日期。
+// 坐标单位为 pt，原点为纸张左上角（封面页页边距为 0）。
 #let master-cover(
   // documentclass 传入的参数
   doctype: "master",
@@ -13,292 +18,203 @@
   fonts: (:),
   info: (:),
   // 其他参数
-  stroke-width: 0.5pt,
-  min-title-lines: 2,
-  min-reviewer-lines: 5,
-  info-inset: (x: 0pt, bottom: 0.5pt),
-  info-key-width: 86pt,
-  info-column-gutter: 18pt,
-  info-row-gutter: 12pt,
-  meta-block-inset: (left: -15pt),
-  meta-info-inset: (x: 0pt, bottom: 2pt),
-  meta-info-key-width: 35pt,
-  meta-info-column-gutter: 10pt,
-  meta-info-row-gutter: 1pt,
-  defence-info-inset: (x: 0pt, bottom: 0pt),
-  defence-info-key-width: 110pt,
-  defence-info-column-gutter: 2pt,
-  defence-info-row-gutter: 12pt,
-  anonymous-info-keys: ("student-id", "author", "author-en", "supervisor", "supervisor-en", "supervisor-ii", "supervisor-ii-en", "chairman", "reviewer"),
-  datetime-display: datetime-display,
+  underline-stroke: 0.6pt,
+  title-size: 18pt,
+  auto-field-width: true,
+  major-label: "学科专业",
+  anonymous-info-keys: ("student-id", "author", "supervisor", "supervisor-ii", "author-en", "supervisor-en"),
+  datetime-display: date => str(date.year()) + " 年 " + str(date.month()) + " 月 " + str(date.day()) + " 日",
   datetime-en-display: datetime-en-display,
 ) = {
   // 1.  默认参数
   fonts = 字体 + fonts
   info = (
-    title: ("基于 Typst 的", "南京大学学位论文"),
+    title: ("基于 Typst 的", "西南交通大学硕士学位论文"),
+    title-en: "A Thesis Template for Southwest Jiaotong University",
     grade: "20XX",
     student-id: "1234567890",
     author: "张三",
+    author-en: "Zhang San",
     department: "某学院",
+    department-en: "School of XXX",
     major: "某专业",
+    major-en: "XXX",
     supervisor: ("李四", "教授"),
+    supervisor-en: "Professor Li Si",
+    supervisor-ii: (),
+    supervisor-ii-en: "",
+    clc: "",
+    udc: "",
+    secret-level: "公开",
+    school-code: "10613",
     submit-date: datetime.today(),
   ) + info
 
   // 2.  对参数进行处理
-  // 2.1 如果是字符串，则使用换行符将标题分隔为列表
   if type(info.title) == str {
     info.title = info.title.split("\n")
   }
   if type(info.title-en) == str {
     info.title-en = info.title-en.split("\n")
   }
-  // 2.2 根据 min-title-lines 和 min-reviewer-lines 填充标题和评阅人
-  info.title = info.title + range(min-title-lines - info.title.len()).map((it) => "　")
-  info.reviewer = info.reviewer + range(min-reviewer-lines - info.reviewer.len()).map((it) => "　")
-  // 2.3 处理日期
   assert(type(info.submit-date) == datetime, message: "submit-date must be datetime.")
-  if type(info.defend-date) == datetime {
-    info.defend-date = datetime-display(info.defend-date)
-  }
-  if type(info.confer-date) == datetime {
-    info.confer-date = datetime-display(info.confer-date)
-  }
-  if type(info.bottom-date) == datetime {
-    info.bottom-date = datetime-display(info.bottom-date)
-  }
-  // 2.4 处理 degree
-  if info.degree == auto {
-    if doctype == "doctor" {
-      info.degree = "工程博士"
-    } else {
-      info.degree = "工程硕士"
-    }
+  if info.at("degree", default: auto) == auto {
+    info.degree = if doctype == "doctor" { "工学博士" } else { "工学硕士" }
   }
 
-  // 3.  内置辅助函数
-  let info-key(body, info-inset: info-inset, is-meta: false) = {
-    set text(
-      font: if is-meta { fonts.宋体 } else { fonts.楷体 },
-      size: if is-meta { 字号.小五 } else { 字号.三号 },
-      weight: if is-meta { "regular" } else { "bold" },
+  // 3.  内部辅助函数
+  let hide(key) = anonymous and (key in anonymous-info-keys)
+  let put(x, y, body) = place(top + left, dx: x * 1pt, dy: y * 1pt, body)
+  let hline(x, y, width, stroke: underline-stroke) = put(x, y, line(length: width * 1pt, stroke: stroke))
+
+  // 4.  中文封面
+  master-pagebreak(twoside: twoside)
+  set page(margin: 0pt, header: none, footer: none, numbering: none)
+  set text(font: fonts.宋体, top-edge: 0.75em, bottom-edge: -0.25em)
+
+  // 4.1 顶部分类号、密级、单位代码（12 pt 宋体）
+  put(73.7, 79.11, text(size: 12pt, "中国图书分类号"))
+  put(397.8, 79.11, text(size: 12pt, "密级"))
+  put(73.7, 102.51, text(size: 12pt, "国际图书分类号"))
+  put(397.8, 102.51, text(size: 12pt, "单位代码"))
+
+  hline(157.7, 89.4, 90)
+  hline(421.8, 89.4, 100)
+  hline(157.7, 112.8, 90)
+  hline(457.8, 112.8, 64)
+
+  if info.clc != "" {
+    put(157.7, 79.11, block(width: 90pt, align(center, text(size: 12pt, info.clc))))
+  }
+  if info.udc != "" {
+    put(157.7, 102.51, block(width: 90pt, align(center, text(size: 12pt, info.udc))))
+  }
+  if info.secret-level != "" {
+    put(421.8, 79.11, block(width: 100pt, align(center, text(size: 12pt, info.secret-level))))
+  }
+  put(457.8, 102.51, block(width: 64pt, align(center, text(size: 12pt, info.school-code))))
+
+  // 4.2 校名与学位类别
+  put(0, 210.04, block(width: 595.3pt, align(center, text(font: fonts.黑体, size: 26pt, weight: "bold", stroke: 0.015em + 0.25pt)[
+    西#h(13pt)南#h(13pt)交#h(13pt)通#h(13pt)大#h(13pt)学
+  ])))
+  put(0, 250.71, block(width: 595.3pt, align(center, text(font: fonts.宋体, size: 22pt, weight: "bold", stroke: 0.015em + 0.25pt)[
+    硕#h(11pt)士#h(11pt)学#h(11pt)位#h(11pt)论#h(11pt)文
+  ])))
+
+  // 4.3 题目使用原生断行和统一偏移的下划线，自动换行不再错配线条。
+  put(73.7, 361.43, context {
+    let title = block(width: 448pt, {
+      set par(leading: 31pt - title-size, first-line-indent: 0pt, spacing: 0pt)
+      set text(font: fonts.黑体, size: title-size)
+      show regex("[A-Za-z0-9]+"): set text(font: "Times New Roman", weight: "bold")
+      align(center, if info.title.join("").trim() == "" {
+        fill-field("", size: title-size, font: fonts.黑体, stroke: underline-stroke)
+      } else {
+        underline(evade: false, offset: 2.64pt, stroke: 0.96pt, info.title.join("\n"))
+      })
+    })
+    assert(measure(title).height <= 90pt,
+      message: "中文封面题目超过三行，请精简题目或显式调整 title-size；不能覆盖个人信息栏。")
+    title
+  })
+
+  // 4.4 固定标签栏、原生可换行内容栏。所有行（包括空栏）均保留填写线。
+  let value(key, body) = if hide(key) { "" } else { body }
+  let label-slot(label) = {
+    set align(left)
+    let chars = label.clusters()
+    if chars.len() in (2, 4) {
+      // 行内 box 中的 fr 空白没有拉开字距。使用原生 grid 的等分列，
+      // 将末字右边缘固定在填写线起点，二字与四字标签保持同宽。
+      grid(columns: range(chars.len() - 1).map(_ => 1fr) + (auto,), ..chars)
+    } else { label }
+  }
+  put(0, 463.63, context {
+    set text(size: 16pt)
+    set par(first-line-indent: 0pt, leading: 15.2pt, spacing: 0pt)
+    let values = (value("major", info.major), value("student-id", info.student-id),
+      value("author", info.author), value("supervisor", info.supervisor.join(" ")),
+      value("department", info.department))
+    let natural-width = calc.max(..values.map(v => measure(
+      box(text(font: fonts.宋体, size: 16pt, v)), width: 10000pt,
+    ).width)) + 16pt
+    let width = if auto-field-width {
+      calc.min(calc.max(natural-width, 159.98pt), 425.2pt - 96.02pt)
+    } else { 159.98pt }
+    let fields = block(width: 96.02pt + width, grid(
+      columns: (96.02pt, width), column-gutter: 0pt, row-gutter: 15.2pt,
+      label-slot(major-label), fill-field(value("major", info.major), font: fonts.宋体),
+      label-slot("学号"), fill-field(value("student-id", info.student-id), font: fonts.宋体),
+      label-slot("作者姓名"), fill-field(value("author", info.author), font: fonts.宋体),
+      label-slot("指导老师"), fill-field(value("supervisor", info.supervisor.join(" ")), font: fonts.宋体),
+      label-slot("学院"), fill-field(value("department", info.department), font: fonts.宋体),
+    ))
+    assert(measure(fields).height <= 220pt,
+      message: "中文封面填写栏总高度超过可用区域，请精简字段或使用规范简称。")
+    if auto-field-width { block(width: 595.3pt, align(center, fields)) }
+    else { block(width: 595.3pt, pad(left: 175.73pt, fields)) }
+  })
+
+  // 4.5 日期
+  put(0, 713.26, block(width: 595.3pt, align(center, text(size: 16pt, datetime-display(info.submit-date)))))
+
+  // 5.  英文扉页
+  master-pagebreak(twoside: twoside)
+
+  put(0, 105.56, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 14pt, weight: "bold", "A Thesis Submitted to"))))
+  put(0, 136.76, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 14pt, weight: "bold", "Southwest Jiaotong University for Master Degree"))))
+
+  put(85.1, 235.04, context {
+    let title = block(width: 425.2pt, align(center, {
+      set par(leading: 9.2pt)
+      text(font: "Times New Roman", size: 22pt, weight: "bold", info.title-en.join("\n"))
+    }))
+    assert(measure(title).height <= 180pt, message: "英文扉页题目过长，不能覆盖个人信息栏。")
+    title
+  })
+
+  // 英文扉页按 Word 批注要求：放不下时加行，显示每行下框线。
+  put(0, 455.83, context {
+    set text(font: "Times New Roman", size: 16pt)
+    set par(first-line-indent: 0pt, leading: 15.2pt, spacing: 0pt)
+    let make-fields(width) = grid(
+      columns: (73.4pt, width), column-gutter: 8pt, row-gutter: 15.2pt,
+      align(right, [Discipline]), fill-field(value("major-en", info.major-en), font: "Times New Roman"),
+      align(right, [Student ID]), fill-field(value("student-id", info.student-id), font: "Times New Roman"),
+      align(right, [Author]), fill-field(value("author-en", info.author-en), font: "Times New Roman"),
+      align(right, [Supervisor]), fill-field(value("supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { ", " + info.supervisor-ii-en } else { "" }), font: "Times New Roman"),
+      align(right, [School]), fill-field(value("department-en", info.department-en), font: "Times New Roman"),
     )
-    rect(
-      width: 100%,
-      inset: info-inset,
-      stroke: none,
-      justify-text(with-tail: is-meta, body)
+    // 由实际填写内容测量统一栏宽。最少160pt，最长内容两侧各留8pt；
+    // 整个标签/内容组合在页面居中，达到3cm页边距后才原生换行。
+    let values = (
+      value("major-en", info.major-en), value("student-id", info.student-id),
+      value("author-en", info.author-en),
+      value("supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { ", " + info.supervisor-ii-en } else { "" }),
+      value("department-en", info.department-en),
     )
-  }
+    let natural-width = calc.max(..values.map(v => measure(
+      box(text(font: "Times New Roman", size: 16pt, v)), width: 10000pt,
+    ).width)) + 16pt
+    let width = if auto-field-width {
+      calc.min(calc.max(natural-width, 160pt), 425.2pt - 81.4pt)
+    } else { 160pt }
+    let fields = block(width: 81.4pt + width, make-fields(width))
+    assert(measure(fields).height <= 235pt,
+      message: "英文扉页填写栏总高度超过可用区域，请精简字段或使用规范简称。")
+    if auto-field-width { block(width: 595.3pt, align(center, fields)) }
+    else { block(width: 595.3pt, pad(left: 164.8pt, fields)) }
+  })
 
-  let info-value(key, body, info-inset: info-inset, is-meta: false, no-stroke: false) = {
-    set align(center)
-    rect(
-      width: 100%,
-      inset: info-inset,
-      stroke: if no-stroke { none } else { (bottom: stroke-width + black) },
-      text(
-        font: if is-meta { fonts.宋体 } else { fonts.楷体 },
-        size: if is-meta { 字号.小五 } else { 字号.三号 },
-        bottom-edge: "descender",
-        if anonymous and (key in anonymous-info-keys) {
-          if is-meta { "█████" } else { "██████████" }
-        } else {
-          body
-        },
-      ),
-    )
-  }
-
-  let anonymous-text(key, body) = {
-    if anonymous and (key in anonymous-info-keys) {
-      "██████████"
-    } else {
-      body
-    }
-  }
-
-  let meta-info-key = info-key.with(info-inset: meta-info-inset, is-meta: true)
-  let meta-info-value = info-value.with(info-inset: meta-info-inset, is-meta: true)
-  let defence-info-key = info-key.with(info-inset: defence-info-inset)
-  let defence-info-value = info-value.with(info-inset: defence-info-inset)
-  
-
-  // 4.  正式渲染
-  pagebreak(weak: true, to: if twoside { "odd" })
-
-  block(width: 70pt, inset: meta-block-inset, grid(
-    columns: (meta-info-key-width, 1fr),
-    column-gutter: meta-info-column-gutter,
-    row-gutter: meta-info-row-gutter,
-    meta-info-key("学校代码"),
-    meta-info-value("school-code", info.school-code),
-    meta-info-key("分类号"),
-    meta-info-value("clc", info.clc),
-    meta-info-key("密级"),
-    meta-info-value("secret-level", info.secret-level),
-    meta-info-key("UDC"),
-    meta-info-value("udc", info.udc),
-    meta-info-key("学号"),
-    meta-info-value("student-id", info.student-id),
-  ))
-
-  // 居中对齐
-  set align(center)
-
-  // 匿名化处理去掉封面标识
-  // if anonymous {
-  //   v(70pt)
-  // } else {
-  //   // 封面图标
-  //   v(6pt)
-  //   image("../assets/vi/nju-emblem.svg", width: 1.42cm)
-  //   // 调整一下左边的间距
-  //   pad(image("../assets/vi/nju-name.svg", width: 4cm))
-  //   v(34pt)
-  // }
-
-  // 将中文之间的空格间隙从 0.25 em 调整到 0.5 em
-  text(size: 28pt, font: fonts.宋体, spacing: 200%, weight: "bold",
-    if doctype == "doctor" { "博 士 学 位 论 文" } else { "硕 士 学 位 论 文" },
-  )
-  
-  if anonymous {
-    v(132pt)
-  } else {
-    v(30pt)
-  }
-
-  block(width: 294pt, grid(
-    columns: (info-key-width, 1fr),
-    column-gutter: info-column-gutter,
-    row-gutter: info-row-gutter,
-    info-key("论文题目"),
-    ..info.title.map((s) => info-value("title", s)).intersperse(info-key("　")),
-    info-key("作者姓名"),
-    info-value("author", info.author),
-    ..(if degree == "professional" {(
-      {
-        set text(font: fonts.楷体, size: 字号.三号, weight: "bold")
-        move(dy: 0.3em, scale(x: 55%, box(width: 10em, "专业学位类别（领域）")))
-      },
-      info-value("major", info.degree + "（" + info.major + "）"),
-    )} else {(
-      info-key("专业名称"),
-      info-value("major", info.major),
-    )}),
-    info-key("研究方向"),
-    info-value("field", info.field),
-    info-key("导师姓名"),
-    info-value("supervisor", info.supervisor.intersperse(" ").sum()),
-    ..(if info.supervisor-ii != () {(
-      info-key("　"),
-      info-value("supervisor-ii", info.supervisor-ii.intersperse(" ").sum()),
-    )} else { () })
-  ))
-
-  v(50pt)
-
-  text(font: fonts.楷体, size: 字号.三号, datetime-display(info.submit-date))
-
-
-  // 第二页
-  pagebreak(weak: true)
-
-  v(161pt)
-
-  block(width: 284pt, grid(
-    columns: (defence-info-key-width, 1fr),
-    column-gutter: defence-info-column-gutter,
-    row-gutter: defence-info-row-gutter,
-    defence-info-key("答辩委员会主席"),
-    defence-info-value("chairman", info.chairman),
-    defence-info-key("评阅人"),
-    ..info.reviewer.map((s) => defence-info-value("reviewer", s)).intersperse(defence-info-key("　")),
-    defence-info-key("论文答辩日期"),
-    defence-info-value("defend-date", info.defend-date, no-stroke: true),
-  ))
-
-  v(216pt)
-
-  align(left, box(width: 7.3em, text(font: fonts.楷体, size: 字号.三号, weight: "bold", justify-text(with-tail: true, "研究生签名"))))
-
-  v(7pt)
-
-  align(left, box(width: 7.3em, text(font: fonts.楷体, size: 字号.三号, weight: "bold", justify-text(with-tail: true, "导师签名"))))
-
-  // 第三页英文封面页
-  pagebreak(weak: true)
-
-  set text(font: fonts.楷体, size: 字号.小四)
-  set par(leading: 1.3em)
-
-  v(45pt)
-  
-  text(font: fonts.黑体, size: 字号.二号, weight: "bold", info.title-en.intersperse("\n").sum())
-
-  v(36pt)
-
-  text(size: 字号.四号)[by]
-
-  v(-6pt)
-
-  text(font: fonts.黑体, size: 字号.四号, weight: "bold", anonymous-text("author-en", info.author-en))
-
-  v(11pt)
-
-  text(size: 字号.四号)[Supervised by]
-
-  v(-6pt)
-
-  text(font: fonts.黑体, size: 字号.四号, anonymous-text("supervisor-en", info.supervisor-en))
-
-  if info.supervisor-ii-en != "" {
-    v(-4pt)
-    
-    text(font: fonts.黑体, size: 字号.四号, anonymous-text("supervisor-ii-en", info.supervisor-ii-en))
-
-    v(-9pt)
-  }
-
-  v(26pt)
-
-  [
-    A dissertation submitted to  \
-    the graduate school of #(if not anonymous { "Nanjing University" })  \
-    in partial fulfilment of the requirements for the degree of  \
-  ]
-
-  v(6pt)
-
-  smallcaps(if doctype == "doctor" { "Doctor of philosophy" } else { "Master" })
-
-  v(6pt)
-
-  [in]
-
-  v(6pt)
-
-  info.major-en
-  
-  v(46pt)
-
-  // if not anonymous {
-  //   image("../assets/vi/nju-emblem.svg", width: 2.14cm)
-  // }
-
-  v(28pt)
-
-  info.department-en
-
-  v(2pt)
-
-  if not anonymous {
-    [Nanjing University]
-  }
-
-  v(28pt)
-
-  datetime-en-display(info.submit-date)
+  put(0, 728.86, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 16pt, datetime-en-display(info.submit-date)))))
 }
+
+
+
+
+
+
+
+
+

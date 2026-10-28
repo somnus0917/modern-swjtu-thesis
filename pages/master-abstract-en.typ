@@ -1,10 +1,12 @@
-#import "@preview/pinit:0.2.2": pin, pinit-place
-#import "../utils/style.typ": 字号, 字体
-#import "../utils/double-underline.typ": double-underline
-#import "../utils/custom-tablex.typ": gridx, colspanx
 #import "../utils/invisible-heading.typ": invisible-heading
+﻿#import "../utils/style.typ": 字号, 字体
+#import "../layouts/master-preface.typ": master-header, master-footer, master-pagebreak
 
-// 研究生英文摘要页
+// 硕士研究生英文摘要页（ABSTRACT）
+// 依据《西南交通大学研究生学位论文撰写范式》：
+//   标题 ABSTRACT 小三号 Times New Roman 加粗居中，段前 24 磅、段后 18 磅；
+//   正文小四号 Times New Roman，固定行距 20 磅，首行缩进 2 字符，两端对齐；
+//   关键词与摘要正文之间空一行，顶格书写，用逗号隔开。
 #let master-abstract-en(
   // documentclass 传入的参数
   doctype: "master",
@@ -15,122 +17,63 @@
   info: (:),
   // 其他参数
   keywords: (),
-  outline-title: "ABSTRACT",
-  outlined: true,
-  abstract-title-weight: "regular",
-  stroke-width: 0.5pt,
-  info-value-align: center,
-  info-inset: (x: 0pt, bottom: 0pt),
-  info-key-width: 74pt,
-  grid-inset: 0pt,
-  column-gutter: 2pt,
-  row-gutter: 10pt,
-  anonymous-info-keys: ("author-en", "supervisor-en", "supervisor-ii-en"),
-  leading: 1.27em,
-  spacing: 1.27em,
+  title: "ABSTRACT",
+  header-title: "ABSTRACT",
+  outlined: false,
+  keyword-gap: 20pt,
   body,
 ) = {
   // 1.  默认参数
   fonts = 字体 + fonts
   info = (
-    title-en: "NJU Thesis Template for Typst",
+    title-en: "A Thesis Template for Southwest Jiaotong University",
     author-en: "Zhang San",
-    department-en: "XX Department",
-    major-en: "XX Major",
+    major-en: "XXX",
     supervisor-en: "Professor Li Si",
   ) + info
 
-  // 2.  对参数进行处理
-  // 2.1 如果是字符串，则使用换行符将标题分隔为列表
-  if type(info.title-en) == str {
-    info.title-en = info.title-en.split("\n")
-  }
+  // 2.  分页与页眉页脚
+  master-pagebreak(twoside: twoside)
+  set page(
+    margin: 3cm,
+    header-ascent: 7.4pt,
+    footer-descent: 0pt,
+    header: master-header(header-title, fonts: fonts),
+    footer: master-footer(numbering: "I", fonts: fonts),
+  )
 
-  // 3.  内置辅助函数
-  let info-key(body) = {
-    rect(
-      inset: info-inset,
-      stroke: none,
-      text(font: fonts.楷体, size: 字号.四号, body),
-    )
-  }
+  if outlined { invisible-heading(level: 1, title) }
 
-  let info-value(key, body) = {
-    set align(info-value-align)
-    rect(
-      width: 100%,
-      inset: info-inset,
-      stroke: (bottom: stroke-width + black),
-      text(
-        font: fonts.楷体,
-        size: 字号.四号,
-        bottom-edge: "descender",
-        if anonymous and (key in anonymous-info-keys) {
-          "█████"
-        } else {
-          body
-        },
-      ),
-    )
-  }
+  // 3.  正文样式
+  // 英文标点也必须使用西文字体，不能被 CJK 标点覆盖范围送入宋体。
+  let en-font = ("Times New Roman",) + if type(fonts.宋体) == array { fonts.宋体 } else { (fonts.宋体,) }
+  set text(font: en-font, size: 字号.小四, top-edge: 0.75em, bottom-edge: -0.25em)
+  set par(leading: 8pt, spacing: 8pt, justify: true, first-line-indent: (amount: 2em, all: true))
 
-  // 4.  正式渲染
-  pagebreak(weak: true, to: if twoside { "odd" })
+  // 4.  标题（与 Word 原版墨迹位置对齐）
+  v(26.44pt)
+  block(
+    width: 100%,
+    above: 0pt,
+    below: 25.67pt,
+    align(center, text(font: "Times New Roman", size: 字号.小三, weight: "bold", title)),
+  )
 
-  [
-    
-    #set par(leading: leading, spacing: spacing,justify: true)
+  // 5.  摘要正文
+  body
 
-    // 标记一个不可见的标题用于目录生成
-    #invisible-heading(level: 1, outlined: outlined, outline-title)
-
-    #align(center)[
-      #set text(font: fonts.楷体,size: 字号.小二, weight: "bold")
-
-      #v(8pt)
-
-      #double-underline((if not anonymous { "南京大学" }) + "研究生毕业论文英文摘要首页用纸")
-
-      #v(-5pt)
-    ]
-
-    #gridx(
-      columns: (56pt, auto, auto, 1fr),
-      inset: grid-inset,
-      column-gutter: column-gutter,
-      row-gutter: row-gutter,
-      info-key[#pin("title-en")THESIS:], colspanx(3, info-value("", " ")),
-      colspanx(4, info-value("", " ")),
-      colspanx(3, info-key[SPECIALIZATION:]), info-value("major-en", info.major-en),
-      colspanx(3, info-key[POSTGRADUATE:]), info-value("author-en", info.author-en),
-      colspanx(2, info-key[MENTOR:]), colspanx(2, info-value("supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { h(1em) + info.supervisor-ii-en })),
-    )
-
-    // 用了很 hack 的方法来实现不规则表格长标题换行...
-    #pinit-place("title-en", {
-      set text(font: fonts.楷体, size: 字号.四号)
-      set par(leading: 1.3em)
-      h(58pt) + (("",)+ info.title-en).intersperse(" ").sum()
+  // 标签列按实际字宽测量，续行与第一行关键词内容对齐。
+  if keywords.len() > 0 {
+    v(keyword-gap)
+    block(width: 100%, above: 0pt, below: 0pt, {
+      set par(first-line-indent: 0pt, leading: 8pt, spacing: 0pt, justify: true)
+      grid(columns: (auto, 1fr), column-gutter: 0.4em,
+        text(weight: "bold", [Keywords:]), keywords.join(", "))
     })
-
-    #v(3pt)
-
-    #align(center, text(font: fonts.黑体, size: 字号.小三, weight: abstract-title-weight, "ABSTRACT"))
-
-    #v(-5pt)
-
-    
-
-    #[#set text(font: fonts.楷体, size: 字号.小四)
-      #set par(first-line-indent: (amount: 2em, all: true))
-
-      #body
-    ]
-
-    #v(10pt)
-
-    #[#set text(font: fonts.楷体, size: 字号.小四)
-      KEYWORDS: #(("",)+ keywords.intersperse("; ")).sum()
-      ]
-  ]
+  }
+  metadata("swjtu-section-end")
 }
+
+
+
+

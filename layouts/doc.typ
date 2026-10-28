@@ -8,15 +8,21 @@
   // 其他参数
   fallback: false,  // 字体缺失时使用 fallback，不显示豆腐块
   lang: "zh",
-  margin: (x: 2.7cm, y: 2.6cm),
+  margin: auto,  // auto 时使用本科模板的页面边距，硕士模板由 documentclass 传入 3cm
+  header-ascent: none,  // 页眉内容相对内容区上边界的上升距离
+  footer-descent: none,  // 页脚内容相对内容区下边界的下降距离
+  math-font: none,
   it,
 ) = {
   // 0.  默认参数
   fonts = 字体 + fonts
+  if margin == auto {
+    margin = (x: 2.7cm, y: 2.6cm)
+  }
 
   // 1.  默认参数
   info = (
-    title: ("基于 Typst 的", "南京大学学位论文"),
+    title: ("基于 Typst 的", "西南交通大学学位论文"),
     author: "张三",
   ) + info
 
@@ -29,6 +35,12 @@
   // 3.  基本的样式设置
   set text(font: fonts.宋体, fallback: fallback, lang: lang)
   set page(margin: margin)
+  if header-ascent != none {
+    set page(header-ascent: header-ascent)
+  }
+  if footer-descent != none {
+    set page(footer-descent: footer-descent)
+  }
 
   // 4.  PDF 元信息
   set document(
@@ -43,5 +55,10 @@
     it
   }
 
-  it
+  if math-font == none {
+    it
+  } else {
+    show math.equation: set text(font: math-font)
+    it
+  }
 }

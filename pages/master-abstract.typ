@@ -1,10 +1,12 @@
-#import "@preview/pinit:0.2.2": pin, pinit-place
-#import "../utils/style.typ": 字号, 字体
-#import "../utils/double-underline.typ": double-underline
-#import "../utils/custom-tablex.typ": gridx, colspanx
 #import "../utils/invisible-heading.typ": invisible-heading
-#import "@preview/cuti:0.4.0": *
-// 研究生中文摘要页
+﻿#import "../utils/style.typ": 字号, 字体
+#import "../layouts/master-preface.typ": master-header, master-footer, master-pagebreak
+
+// 硕士研究生中文摘要页
+// 依据《西南交通大学研究生学位论文撰写范式》：
+//   标题「摘　要」小三号黑体居中，段前 24 磅、段后 18 磅；
+//   正文小四号宋体，固定行距 20 磅，首行缩进 2 字符，两端对齐；
+//   关键词与摘要正文之间空一行，顶格书写，用逗号隔开。
 #let master-abstract(
   // documentclass 传入的参数
   doctype: "master",
@@ -15,124 +17,62 @@
   info: (:),
   // 其他参数
   keywords: (),
-  outline-title: "中文摘要",
-  outlined: true,
-  abstract-title-weight: "regular",
-  stroke-width: 0.5pt,
-  info-value-align: center,
-  info-inset: (x: 0pt, bottom: 0pt),
-  info-key-width: 74pt,
-  grid-inset: 0pt,
-  column-gutter: 0pt,
-  row-gutter: 10pt,
-  anonymous-info-keys: ("author", "grade", "supervisor", "supervisor-ii"),
-  leading: 1.27em,
-  spacing: 1.27em,
+  title: "摘　要",
+  header-title: "摘 要",
+  outlined: false,
+  anonymous-info-keys: (),
+  keyword-gap: 20pt,
   body,
 ) = {
   // 1.  默认参数
   fonts = 字体 + fonts
   info = (
-    title: ("基于 Typst 的", "南京大学学位论文"),
+    title: ("基于 Typst 的", "西南交通大学硕士学位论文"),
+    student-id: "1234567890",
     author: "张三",
-    grade: "20XX",
-    department: "某学院",
     major: "某专业",
     supervisor: ("李四", "教授"),
   ) + info
 
-  // 2.  对参数进行处理
-  // 2.1 如果是字符串，则使用换行符将标题分隔为列表
-  if type(info.title) == str {
-    info.title = info.title.split("\n")
-  }
+  // 2.  分页与页眉页脚
+  master-pagebreak(twoside: twoside)
+  set page(
+    margin: 3cm,
+    header-ascent: 7.4pt,
+    footer-descent: 0pt,
+    header: master-header(header-title, fonts: fonts),
+    footer: master-footer(numbering: "I", fonts: fonts),
+  )
 
-  // 3.  内置辅助函数
-  let info-key(body) = {
-    rect(
-      inset: info-inset,
-      stroke: none,
-      text(font: fonts.楷体, size: 字号.四号, body),
-    )
-  }
+  if outlined { invisible-heading(level: 1, title) }
 
-  let info-value(key, body) = {
-    set align(info-value-align)
-    rect(
-      width: 100%,
-      inset: info-inset,
-      stroke: (bottom: stroke-width + black),
-      text(
-        font: fonts.楷体,
-        size: 字号.四号,
-        bottom-edge: "descender",
-        if anonymous and (key in anonymous-info-keys) {
-          "█████"
-        } else {
-          body
-        },
-      ),
-    )
-  }
+  // 3.  正文样式
+  set text(font: fonts.宋体, size: 字号.小四, top-edge: 0.75em, bottom-edge: -0.25em)
+  set par(leading: 8pt, spacing: 8pt, justify: true, first-line-indent: (amount: 2em, all: true))
 
-  // 4.  正式渲染
-  pagebreak(weak: true, to: if twoside { "odd" })
+  // 4.  标题（与 Word 原版墨迹位置对齐）
+  v(28.94pt)
+  block(
+    width: 100%,
+    above: 0pt,
+    below: 25.17pt,
+    align(center, text(font: fonts.黑体, size: 字号.小三, title)),
+  )
 
-  [
-    // #set text(font: fonts.楷体, size: 字号.四号)
-    #set par(leading: leading, spacing: spacing,justify: true)
+  // 5.  摘要正文
+  body
 
-    // 标记一个不可见的标题用于目录生成
-    #invisible-heading(level: 1, outlined: outlined, outline-title)
-
-    #align(center)[
-      #set text(font: fonts.楷体,size: 字号.小二, weight: "bold")
-
-      #v(8pt)
-
-      #double-underline((if not anonymous { "南京大学" }) + "研究生毕业论文中文摘要首页用纸")
-
-      #v(-5pt)
-    ]
-
-    #gridx(
-      columns: (104pt, 1fr, auto, 1fr, auto, 1.5fr),
-      inset: grid-inset,
-      column-gutter: column-gutter,
-      row-gutter: row-gutter,
-      info-key[#pin("title")毕业论文题目：], colspanx(5, info-value("", " ")),
-      colspanx(6, info-value("", " ")),
-      colspanx(2, info-value("major", info.major)), info-key[专业],
-      info-value("grade", info.grade), info-key(if doctype == "doctor" { [级硕士生姓名：] } else { [级博士生姓名：] } ), info-value("author", info.author),
-      colspanx(2, info-key[指导教师（姓名、职称）：]), colspanx(4, info-value("supervisor", info.supervisor.at(0) + " " + info.supervisor.at(1) + if info.supervisor-ii != () { h(1em) + info.supervisor-ii.at(0) + " " + info.supervisor-ii.at(1) })),
-    )
-
-    // 用了很 hack 的方法来实现不规则表格长标题换行...
-    #pinit-place("title", {
-      set text(font: fonts.楷体, size: 字号.四号)
-      set par(leading: 1.3em)
-      h(108pt) + (("",)+ info.title).sum()
+  // 标签列按实际字宽测量，续行与第一行关键词内容对齐。
+  if keywords.len() > 0 {
+    v(keyword-gap)
+    block(width: 100%, above: 0pt, below: 0pt, {
+      set par(first-line-indent: 0pt, leading: 8pt, spacing: 0pt, justify: true)
+      grid(columns: (auto, 1fr), column-gutter: 0pt,
+        text(weight: "bold", stroke: 0.015em + 0.25pt, [关键词：]), keywords.join("，"))
     })
-
-    #v(3pt)
-
-    #align(center, text(font: fonts.黑体, size: 字号.小三, weight: abstract-title-weight, "摘　　要"))
-
-    #v(-5pt)
-
-    // #set text(font: fonts.楷体, size: 字号.小四)
-
-    #[#set text(font: fonts.楷体, size: 字号.小四)
-      #set par(first-line-indent: (amount: 2em, all: true))
-
-      #body
-    ]
-
-    #v(10pt)
-    #[
-      #set text(font: fonts.楷体, size: 字号.小四)
-      #fakebold[关键词]：#(("",)+ keywords.intersperse("；")).sum()
-    ]
-    
-  ]
+  }
+  metadata("swjtu-section-end")
 }
+
+
+
